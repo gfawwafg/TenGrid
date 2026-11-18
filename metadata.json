@@ -1,0 +1,6 @@
+{
+  "name": "TenGrid",
+  "description": "7x10 weekly routine matrix for Android with green, yellow, and red completion tracking and accountability punishments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
