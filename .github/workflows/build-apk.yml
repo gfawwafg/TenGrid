@@ -1,0 +1,60 @@
+
+name: Build TenGrid Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project files
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install project packages
+        run: npm install --no-package-lock
+
+      - name: Install Android packaging tools
+        run: npm install --no-save @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7
+
+      - name: Build TenGrid
+        run: npm run build
+
+      - name: Configure Android
+        run: npx cap init TenGrid com.gfawwafg.tengrid --web-dir dist
+
+      - name: Create Android project
+        run: npx cap add android
+
+      - name: Sync Android files
+        run: npx cap sync android
+
+      - name: Generate APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Save APK for download
+        uses: actions/upload-artifact@v4
+        with:
+          name: TenGrid-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
